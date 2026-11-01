@@ -1,0 +1,37 @@
+Panel světel
+Copyright (c) 2026 Stanislav Kaska
+
+Projekt je zveřejněn pod licencí Creative Commons
+Uveďte původ-Neužívejte komerčně-Nezpracovávejte 4.0 Mezinárodní (CC BY-NC-ND 4.0).
+
+Smíte: projekt si stáhnout, používat ho a sdílet jeho nezměněné kopie, pokud uvedete
+autora a odkaz na zdroj.
+Nesmíte: projekt prodávat ani jinak užívat komerčně a nesmíte šířit jeho upravené verze.
+
+Shrnutí:     https://creativecommons.org/licenses/by-nc-nd/4.0/deed.cs
+Plné znění:  https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.cs
+
+Knihovny třetích stran ve složce lib/ se řídí vlastními licencemi, které jsou u nich
+přiložené (GFX Library for Arduino: BSD, SensorLib a XPowersLib: MIT). Licence
+CC BY-NC-ND 4.0 se na ně nevztahuje.
+
+Ovladač zvukového kodeku src/es8311.* (Copyright Espressif Systems) se řídí licencí
+Apache 2.0 (LICENSES/Apache-2.0.txt), ne licencí CC BY-NC-ND 4.0.
+
+Písmo Selawik (Copyright 2015 Microsoft Corporation) ve složce tools/fonts/ a z něj
+vygenerované bitmapy písma v src/smooth_font.cpp a docs/smooth_font.js se řídí licencí
+SIL Open Font License 1.1 (tools/fonts/OFL.txt), ne licencí CC BY-NC-ND 4.0.
+
+------------------------------------------------------------------------------
+
+Panel světel
+Copyright (c) 2026 Stanislav Kaska
+
+Licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
+International (CC BY-NC-ND 4.0): https://creativecommons.org/licenses/by-nc-nd/4.0/
+
+Third-party libraries in lib/ are covered by their own licenses included with them.
+The ES8311 codec driver src/es8311.* (Copyright Espressif Systems) is licensed under
+the Apache License 2.0, see LICENSES/Apache-2.0.txt.
+The Selawik font in tools/fonts/ and the font bitmaps generated from it
+(src/smooth_font.cpp, docs/smooth_font.js) are licensed under the SIL Open Font License 1.1.

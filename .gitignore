@@ -1,0 +1,9 @@
+.pio/
+.vscode/
+__pycache__/
+*.pyc
+# Přihlašovací údaje (Wi-Fi, účet Tapo) – nikdy do repozitáře
+include/secrets.h
+# Snímky z aplikace Tapo s adresami domácích zařízení
+tapo_info/
+tapo-info/
