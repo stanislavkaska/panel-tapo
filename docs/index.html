@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel světel — ovladač pásků Tapo na baterii</title>
+  <meta name="description" content="Stolní ovladač pásků Tapo L900 z krabičky Waveshare ESP32-S3 s 2,16&quot; dotykovým AMOLED displejem. Spí, dotykem se probudí, ukáže stav světel, klepnutím je přepne a nastaví jim barvu a jas; zásuvkám Tapo P100 nastaví denní časovač. Přímo v místní síti protokolem KLAP, bez cloudu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23050609'/><rect x='14' y='32' width='72' height='36' rx='18' fill='%230c2a5a' stroke='%233d8bff' stroke-width='4'/><circle cx='66' cy='50' r='13' fill='%238fc6ff'/></svg>">
+</head>
+<body>
+
+  <div class="bg-glow">
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="brand">
+        <span class="brand-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="3" fill="#fff" stroke="none"/>
+          </svg>
+        </span>
+        <span>Panel světel</span>
+      </a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="site-nav">
+        <a href="#simulator">Simulátor</a>
+        <a href="#chovani">Jak se chová</a>
+        <a href="#galerie">Obrazovky</a>
+        <a href="#fotky">Fotky</a>
+        <a href="#navod">Jak začít</a>
+        <a href="#ovladani">Ovládání</a>
+        <a href="#zasuvky">Zásuvky</a>
+        <a href="#spotreba">Baterie</a>
+        <a href="#potize">Potíže</a>
+      </nav>
+      <a class="gh-link" href="https://github.com/stanislavkaska/panel-tapo" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span class="gh-text">GitHub</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="eb-text"><span class="eb-part">Waveshare ESP32-S3</span><span class="eb-sep"> · </span><span class="eb-part">AMOLED 2,16" · Tapo L900</span></span></div>
+        <h1>Jedno klepnutí a <em>světla svítí</em>. Zbytek času krabička spí.</h1>
+        <p class="lead">
+          Stolní ovladač pásků Tapo na baterii. Dotyk nebo tlačítko ho probudí, během chvíle ukáže,
+          která světla svítí, klepnutím je přepne a nastaví jim barvu a jas. Zvládne i zásuvky Tapo P100 s denním
+          časovačem. Po dvaceti sekundách zhasne a usne.
+          Komunikuje přímo v domácí síti protokolem KLAP, stejně jako aplikace Tapo, bez cloudu a bez internetu.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#simulator">Vyzkoušet v prohlížeči</a>
+          <a class="btn" href="https://rpishop.cz/684624/waveshare-vyvojova-deska-esp32-s3-kapacitnim-amoled-2-16-displejem" target="_blank" rel="noopener">Koupit krabičku</a>
+          <a class="btn" href="#navod">Jak začít</a>
+        </div>
+        <div class="hero-facts">
+          <div class="fact"><strong>až 6</strong><span>světel a zásuvek na jedné obrazovce</span></div>
+          <div class="fact"><strong>~2 s</strong><span>od dotyku k ověřenému stavu</span></div>
+          <div class="fact"><strong>20 s</strong><span>bdění, pak hluboký spánek</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="hero-photo">
+          <a href="foto/20261030_224304.jpg" data-photo="1" aria-label="Zvětšit fotku">
+            <img src="foto/thumbs/20261030_224304.jpg" srcset="foto/thumbs/20261030_224304.jpg 1024w, foto/20261030_224304.jpg 2048w" sizes="(max-width: 980px) 92vw, 520px" width="1024" height="1024" alt="Panel světel na stole: tři světla, Ložnice a Dětský pokoj zapnuté na 4 % jasu, Obývák vypnutý" fetchpriority="high">
+          </a>
+        </div>
+        <p class="device-caption">Skutečná krabička se třemi světly Tapo (fotka ze starší verze firmwaru). Klepnutím zvětšíš.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Simulátor ────────────────────────────────────────────────────── -->
+  <section class="simulator-section alt" id="simulator">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Simulátor</div>
+        <h2>Vyzkoušejte si panel v prohlížeči</h2>
+        <p>Plátno kreslí obrazovky pixel po pixelu stejně jako krabička (stejná písma i barvy) a napodobuje její chování včetně barvy a jasu, časovače zásuvky, prodlevy, zhasnutí, spánku a ukázky. Síť je jen zpožděná náhrada, žádný pásek ani zásuvka se neovládá.</p>
+      </div>
+      <div class="sim-grid">
+        <div>
+          <div class="device">
+            <div class="device-buttons"><span></span><span></span><span></span></div>
+            <canvas id="sim-canvas" width="480" height="480" aria-label="Simulátor displeje panelu"></canvas>
+          </div>
+          <p class="device-caption">Přepínač = zapnout/vypnout · jméno = barva a jas, u zásuvky časovač · podržení prstu = nastavení · po prodlevě zhasne, klepnutím se probudí</p>
+        </div>
+        <div class="sim-panel">
+          <div class="sim-buttons">
+            <button class="hw-btn" id="btn-boot" type="button">BOOT<small>další světlo / položka · z barvy a jasu zpět · podržet = nastavení</small></button>
+            <button class="hw-btn" id="btn-key" type="button">KEY<small>přepnout vybrané světlo · v nastavení změnit</small></button>
+            <button class="hw-btn" id="btn-pwr" type="button">PWR<small>zhasnout a usnout</small></button>
+          </div>
+          <div class="sim-options">
+            <label><input type="checkbox" id="opt-usb"> Napájení z USB (jen zhasne, nespí; prodleva trojnásobná)</label>
+            <label><input type="checkbox" id="opt-wifi-fail"> Simulovat výpadek Wi-Fi</label>
+            <label><input type="checkbox" id="opt-light-fail"> Poslední světlo mimo síť</label>
+            <label>Počet světel:
+              <select id="opt-lights">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </select>
+            </label>
+          </div>
+          <pre class="sim-log" id="sim-log" aria-live="polite"></pre>
+          <ul class="sim-tips">
+            <li><b>Probuzení:</b> po zhasnutí klepni na displej, BOOT nebo KEY. Ukáže se poslední stav šedě, pak se připojí a stav ověří. PWR z hlubokého spánku nebudí, jen na USB.</li>
+            <li><b>Barva a jas:</b> klepni na jméno světla. Deset základních barev, jas po 10&nbsp;% nebo po 1&nbsp;%; změna se pošle hned a zhasnutý pásek rozsvítí. Zpět tlačítkem Zpět nebo BOOT.</li>
+            <li><b>Zásuvka</b> (LED dvůr, od čtyř zařízení i 3D tiskárna): na kartě doba provozu, klepnutí na jméno otevře časovač „Zapnout v“ a „Vypnout v“. Přepínač pravidlo povolí nebo zakáže, tlačítka posunou čas o hodinu nebo o 5 minut.</li>
+            <li><b>Klepnutí během připojování</b> se zapamatuje a provede, jakmile je stav načtený.</li>
+            <li><b>Výběr tlačítky:</b> první stisk BOOT označí první světlo, další posouvají dolů, KEY vybrané přepne.</li>
+            <li><b>Nastavení:</b> podržení prstu nebo tlačítko vpravo dole. Jas, prodleva, probuzení dotykem, zvuk, ukázka, způsob spánku.</li>
+            <li><b>Ukázka</b> (Nastavení → Demo režim): 12 podob obrazovky. Klepnutí nebo BOOT = další, Ukončit, KEY nebo podržení = konec.</li>
+            <li><b>Zvuk</b> hraje přes Web Audio až po prvním klepnutí (pravidlo prohlížeče).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Chování ──────────────────────────────────────────────────────── -->
+  <section id="chovani">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Jak se chová</div>
+        <h2>Spí, probudí se, ukáže, přepne, usne</h2>
+        <p>Krabička většinu času nedělá nic: displej zhasnutý, Wi-Fi vypnutá, procesor v hlubokém spánku. Energii bere jen řadič napájení a čekání na dotyk či tlačítko.</p>
+      </div>
+      <div class="timeline">
+        <div class="step"><h3>Probuzení</h3><p>Dotyk displeje nebo tlačítko BOOT či KEY. Displej se rozsvítí a hned ukáže poslední známý stav světel šedě.</p></div>
+        <div class="step"><h3>Wi-Fi</h3><p>Připojí se k domácí síti. Kanál i přístupový bod si pamatuje z minula, takže to trvá zlomek sekundy.</p></div>
+        <div class="step"><h3>Stav světel</h3><p>U každého pásku se zeptá, zda svítí a jak jasně. Relace KLAP přežívá spánek, handshake obvykle odpadá.</p></div>
+        <div class="step"><h3>Zobrazení</h3><p>Karty se rozsvítí: ZAPNUTO světle modře s přepínačem vpravo, VYPNUTO šedě. U zapnutého světla i jas, tečka před jménem má barvu pásku, u zásuvky doba provozu a časovač.</p></div>
+        <div class="step"><h3>Ovládání</h3><p>Klepnutí na přepínač pásek přepne a krabička cvakne, klepnutí na jméno otevře barvu a jas. První dotyk budí, druhý ovládá.</p></div>
+        <div class="step"><h3>Spánek</h3><p>Po prodlevě bez dotyku (výchozí 20 s) displej zhasne, Wi-Fi se vypne a krabička usne. Posledních 5 s před tím je displej ztlumený. Na USB jen zhasne.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Co umí ───────────────────────────────────────────────────────── -->
+  <section class="alt" id="funkce">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Co umí</div>
+        <h2>Jedna věc, pořádně</h2>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>Přímo v síti, bez cloudu</h3>
+          <p>Pásek se ovládá protokolem KLAP přes HTTP v místní síti. Funguje i bez internetu a nic neposílá ven.</p>
+        </div>
+        <div class="card">
+          <div class="icon">◐</div>
+          <h3>Až 6 světel a zásuvek</h3>
+          <p>Jedno zařízení dostane velký přepínač přes celý displej, dvě dvě karty, tři a čtyři řádky se ZAP/VYP. Pět a šest se seřadí do užších řádků: velké jméno, vedle něj jas nebo doba provozu a přepínač.</p>
+        </div>
+        <div class="card">
+          <div class="icon">⟳</div>
+          <h3>Stav hned, ověřený za chvíli</h3>
+          <p>Po probuzení se ukáže poslední známý stav z paměti a nahoře datum a čas z hardwarových hodin. Ověřený stav nahradí ten z paměti během sekundy či dvou.</p>
+        </div>
+        <div class="card">
+          <div class="icon">✦</div>
+          <h3>Barva a jas</h3>
+          <p>Klepnutí na jméno světla otevře deset základních barev a jas po 10&nbsp;% nebo po 1&nbsp;%. Změna se pošle hned a zhasnutý pásek rozsvítí.</p>
+        </div>
+        <div class="card">
+          <div class="icon">✓</div>
+          <h3>Chyby přímo na kartě</h3>
+          <p>Oranžový rámeček a hláška „není v síti“, „neodpovídá“, „špatné přihlášení“ nebo „relace vypršela“. Nikdy nehádáte, proč světlo nereaguje.</p>
+        </div>
+        <div class="card">
+          <div class="icon">⚙</div>
+          <h3>Nastavení v krabičce</h3>
+          <p>Jas, prodleva zhasnutí, probuzení dotykem, zvuk, způsob spánku a ukázka všech podob obrazovky. Ukládá se do flash a přežije i přehrání firmwaru.</p>
+        </div>
+        <div class="card">
+          <div class="icon">⏲</div>
+          <h3>Zásuvky Tapo P100 s časovačem</h3>
+          <p>Vedle světel i chytré zásuvky (třeba 3D tiskárna). Karta ukáže dobu provozu, klepnutí na jméno otevře denní časovač „zapnout v“ a „vypnout v“. Pravidla běží přímo v zásuvce, takže fungují i když krabička spí.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Galerie ──────────────────────────────────────────────────────── -->
+  <section id="galerie">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Obrazovky</div>
+        <h2>Černá a odstíny modré</h2>
+        <p>Většina plochy je černá, AMOLED tam nesvítí. Modrá je jen tam, kde nese informaci: zapnuté světlo, aktivní prvek, hodnota. Oranžová zůstala pro chyby a slabou baterii. Skutečné barvy pásků ukazují jen tečky před jmény a dlaždice v nastavení barvy. Klepnutím na náhled se obrazovka zvětší v plném rozlišení.</p>
+      </div>
+      <!-- Náhledy 240 px jsou přesná polovina displeje (tools/preview.py), originál 480 px
+           dostanou displeje s vyšší hustotou a lightbox -->
+      <div class="gallery">
+        <figure class="shot"><a href="screens/1_dve_svetla.png" data-lightbox="0"><img src="screens/thumbs/1_dve_svetla.png" srcset="screens/thumbs/1_dve_svetla.png 240w, screens/1_dve_svetla.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Dvě světla" loading="lazy"></a><figcaption>Dvě světla, jedno svítí</figcaption></figure>
+        <figure class="shot"><a href="screens/10_barva_jas.png" data-lightbox="1"><img src="screens/thumbs/10_barva_jas.png" srcset="screens/thumbs/10_barva_jas.png 240w, screens/10_barva_jas.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Barva a jas" loading="lazy"></a><figcaption>Barva a jas: klepnutí na jméno</figcaption></figure>
+        <figure class="shot"><a href="screens/12_jas_po_jedne.png" data-lightbox="2"><img src="screens/thumbs/12_jas_po_jedne.png" srcset="screens/thumbs/12_jas_po_jedne.png 240w, screens/12_jas_po_jedne.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Jas po jednom procentu" loading="lazy"></a><figcaption>Jas po 1&nbsp;%, prst na –1</figcaption></figure>
+        <figure class="shot"><a href="screens/2_jedno_svetlo.png" data-lightbox="3"><img src="screens/thumbs/2_jedno_svetlo.png" srcset="screens/thumbs/2_jedno_svetlo.png 240w, screens/2_jedno_svetlo.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Jedno světlo" loading="lazy"></a><figcaption>Jedno světlo s velkým přepínačem</figcaption></figure>
+        <figure class="shot"><a href="screens/11_tri_svetla.png" data-lightbox="4"><img src="screens/thumbs/11_tri_svetla.png" srcset="screens/thumbs/11_tri_svetla.png 240w, screens/11_tri_svetla.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Tři světla" loading="lazy"></a><figcaption>Tři světla, barva u jména</figcaption></figure>
+        <figure class="shot"><a href="screens/5_ctyri_svetla.png" data-lightbox="5"><img src="screens/thumbs/5_ctyri_svetla.png" srcset="screens/thumbs/5_ctyri_svetla.png 240w, screens/5_ctyri_svetla.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Čtyři světla" loading="lazy"></a><figcaption>Čtyři světla, výběr tlačítky</figcaption></figure>
+        <figure class="shot"><a href="screens/8_sest_svetel.png" data-lightbox="6"><img src="screens/thumbs/8_sest_svetel.png" srcset="screens/thumbs/8_sest_svetel.png 240w, screens/8_sest_svetel.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Šest světel" loading="lazy"></a><figcaption>Šest světel: jméno a jas vedle sebe</figcaption></figure>
+        <figure class="shot"><a href="screens/3_pripojuji.png" data-lightbox="7"><img src="screens/thumbs/3_pripojuji.png" srcset="screens/thumbs/3_pripojuji.png 240w, screens/3_pripojuji.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Připojování po probuzení" loading="lazy"></a><figcaption>Po probuzení: připojuji, stav z minula šedě</figcaption></figure>
+        <figure class="shot"><a href="screens/4_chyba.png" data-lightbox="8"><img src="screens/thumbs/4_chyba.png" srcset="screens/thumbs/4_chyba.png 240w, screens/4_chyba.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Světlo mimo síť" loading="lazy"></a><figcaption>Světlo mimo síť</figcaption></figure>
+        <figure class="shot"><a href="screens/9_bez_wifi.png" data-lightbox="9"><img src="screens/thumbs/9_bez_wifi.png" srcset="screens/thumbs/9_bez_wifi.png 240w, screens/9_bez_wifi.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Wi-Fi nedostupná" loading="lazy"></a><figcaption>Wi-Fi nedostupná, slabá baterie</figcaption></figure>
+        <figure class="shot"><a href="screens/6_nastaveni.png" data-lightbox="10"><img src="screens/thumbs/6_nastaveni.png" srcset="screens/thumbs/6_nastaveni.png 240w, screens/6_nastaveni.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Nastavení" loading="lazy"></a><figcaption>Nastavení</figcaption></figure>
+        <figure class="shot"><a href="screens/7_uvod.png" data-lightbox="11"><img src="screens/thumbs/7_uvod.png" srcset="screens/thumbs/7_uvod.png 240w, screens/7_uvod.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Úvodní obrazovka" loading="lazy"></a><figcaption>Úvodní obrazovka, jen po zapnutí</figcaption></figure>
+        <figure class="shot"><a href="screens/13_zasuvky.png" data-lightbox="12"><img src="screens/thumbs/13_zasuvky.png" srcset="screens/thumbs/13_zasuvky.png 240w, screens/13_zasuvky.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Světlo a dvě zásuvky" loading="lazy"></a><figcaption>Světlo a dvě zásuvky P100: doba provozu a časovač pod jménem</figcaption></figure>
+        <figure class="shot"><a href="screens/14_zasuvka_casovac.png" data-lightbox="13"><img src="screens/thumbs/14_zasuvka_casovac.png" srcset="screens/thumbs/14_zasuvka_casovac.png 240w, screens/14_zasuvka_casovac.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Časovač zásuvky" loading="lazy"></a><figcaption>Zásuvka: časovač zapnutí a vypnutí</figcaption></figure>
+        <figure class="shot"><a href="screens/15_zasuvka_vypnuta.png" data-lightbox="14"><img src="screens/thumbs/15_zasuvka_vypnuta.png" srcset="screens/thumbs/15_zasuvka_vypnuta.png 240w, screens/15_zasuvka_vypnuta.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Zásuvka vypnutá" loading="lazy"></a><figcaption>Zásuvka vypnutá, prst na +5 m</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Fotky krabičky ───────────────────────────────────────────────── -->
+  <section class="alt" id="fotky">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Naživo</div>
+        <h2>Krabička na stole</h2>
+        <p>Skutečný displej se třemi světly: dvě svítí na 4&nbsp;% jasu, třetí je vypnuté. Nahoře síť, ke které je krabička připojená, a baterie, dole odpočet do zhasnutí. Fotky jsou ze starší verze firmwaru, ještě bez data a času, barevné tečky před jménem a rozdělení karty; současný vzhled ukazují <a href="#galerie">obrazovky</a> výše.</p>
+      </div>
+      <!-- Zmenšeniny 1024 px v foto/thumbs, originál 2048 px pro displeje s vyšší hustotou a lightbox -->
+      <div class="photos">
+        <figure class="photo"><a href="foto/20261030_224138.jpg" data-photo="0"><img src="foto/thumbs/20261030_224138.jpg" srcset="foto/thumbs/20261030_224138.jpg 1024w, foto/20261030_224138.jpg 2048w" sizes="(max-width: 640px) 92vw, (max-width: 1120px) 46vw, 540px" width="1024" height="1024" alt="Panel světel zepředu: tři karty světel, nahoře síť obyvak a baterie 100 %" loading="lazy"></a><figcaption>Zepředu: tři světla na displeji 480 × 480, nahoře tři tlačítka</figcaption></figure>
+        <figure class="photo"><a href="foto/20261030_224304.jpg" data-photo="1"><img src="foto/thumbs/20261030_224304.jpg" srcset="foto/thumbs/20261030_224304.jpg 1024w, foto/20261030_224304.jpg 2048w" sizes="(max-width: 640px) 92vw, (max-width: 1120px) 46vw, 540px" width="1024" height="1024" alt="Panel světel z boku na stole" loading="lazy"></a><figcaption>Z boku: krabička stojí na stole, akumulátor je uvnitř</figcaption></figure>
+      </div>
+      <div class="buy">
+        <div>
+          <h3>Kde koupit krabičku</h3>
+          <p>Waveshare <span class="nowrap">ESP32-S3-Touch-AMOLED-2.16</span> ve verzi s baterií. Firmware se do ní nahraje přes USB-C.</p>
+        </div>
+        <a class="btn btn-primary" href="https://rpishop.cz/684624/waveshare-vyvojova-deska-esp32-s3-kapacitnim-amoled-2-16-displejem" target="_blank" rel="noopener">Koupit v RPishop</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Hardware ─────────────────────────────────────────────────────── -->
+  <section id="hardware">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Hardware</div>
+        <h2>Waveshare <span class="nowrap">ESP32-S3-Touch-AMOLED-2.16</span></h2>
+        <p>Stejná krabička jako Rozhodovač. Firmware je jiný, hardwarová vrstva je společná.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="kv">
+          <tr><td>Displej</td><td>2,16" AMOLED 480 × 480, řadič CO5300 přes QSPI, kapacitní dotyk CST9220</td></tr>
+          <tr><td>Procesor</td><td>ESP32-S3, 16 MB flash, 8 MB PSRAM (framebuffer displeje), Wi-Fi 2,4 GHz</td></tr>
+          <tr><td>Napájení</td><td>AXP2101, akumulátor 3,7 V, nabíjení přes USB-C, měření napětí a procent</td></tr>
+          <tr><td>Tlačítka</td><td>BOOT (GPIO 0), KEY (GPIO 18), PWR přes AXP2101</td></tr>
+          <tr><td>Zvuk</td><td>kodek ES8311 a reproduktor, jen krátká cvaknutí a tóny</td></tr>
+          <tr><td>Hodiny</td><td>PCF85063 běží i ve spánku; čas se po připojení nastaví ze sítě (NTP, pásmo Praha) a ukazuje se nahoře mezi Wi-Fi a baterií</td></tr>
+          <tr><td>Světla</td><td>Tapo L900 s firmwarem 1.4.x (KLAP); jiná světla Tapo rodiny SMART.TAPOBULB by měla fungovat stejně; zásuvky Tapo P100 (firmware 1.4.6 a 1.5.5) s denním časovačem zapnutí a vypnutí</td></tr>
+          <tr><td>Koupit</td><td><a href="https://rpishop.cz/684624/waveshare-vyvojova-deska-esp32-s3-kapacitnim-amoled-2-16-displejem" target="_blank" rel="noopener">Waveshare <span class="nowrap">ESP32-S3-Touch-AMOLED-2.16</span> v RPishop</a>, verze s baterií</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Návod ────────────────────────────────────────────────────────── -->
+  <section class="alt" id="navod">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Jak začít</div>
+        <h2>Tři kroky k vlastnímu panelu</h2>
+        <p>Potřebujete krabičku Waveshare <span class="nowrap">ESP32-S3-Touch-AMOLED-2.16</span> s baterií (<a href="https://rpishop.cz/684624/waveshare-vyvojova-deska-esp32-s3-kapacitnim-amoled-2-16-displejem" target="_blank" rel="noopener">koupíte v RPishop</a>), světla Tapo a počítač s Windows, PowerShellem, Pythonem 3.10+ a PlatformIO (<code>python -m pip install platformio</code>). První překlad stáhne toolchain ESP32.</p>
+      </div>
+      <div class="steps">
+        <article class="card step-row">
+          <div class="step-text">
+            <h3><span class="num">1</span> Aplikace Tapo</h3>
+            <p>Zapněte kompatibilitu s třetími stranami, jinak pásek s novým firmwarem místní přihlášení odmítne.</p>
+            <p>V informacích o zařízení opište IP adresu pásku. V routeru ji rezervujte podle MAC adresy, aby se neměnila.</p>
+          </div>
+          <div class="step-aside">
+            <div class="ui-path"><span>Tapo</span><i>→</i><span>Já</span><i>→</i><span>Nastavení</span><i>→</i><span>Kompatibilita s třetími stranami</span></div>
+            <div class="ui-path"><span>Tapo</span><i>→</i><span>pásek</span><i>→</i><span>Nastavení zařízení</span><i>→</i><span>Info o zařízení</span><i>→</i><span>IP adresa</span></div>
+          </div>
+        </article>
+        <article class="card step-row">
+          <div class="step-text">
+            <h3><span class="num">2</span> Přihlašovací údaje</h3>
+            <p>Zkopírujte šablonu a do kopie vyplňte Wi-Fi, účet Tapo a světla. Soubor <code>include\secrets.h</code> je v <code>.gitignore</code>, do repozitáře se nedostane. Údaje jsou zakompilované do firmwaru, po změně ho nahrajte znovu.</p>
+            <p><b>Wi-Fi</b> (<code>WIFI_NETS</code>): sítí může být víc a jejich pořadí je priorita. Naposledy úspěšnou síť zkusí po probuzení jako první a bez skenování; když tam není, jednou prohledá okolí a připojí se k první síti ze seznamu, kterou vidí. Jen 2,4 GHz.</p>
+            <p><b>Světla a zásuvky</b> (<code>TAPO_DEVICES</code>, nejvýš 6): popisek a IP adresa každého zařízení, v pořadí karet na displeji. Zásuvka P100 se zapíše stejně jako světlo, krabička ji pozná sama. Když popisek necháte prázdný, krabička ukáže jméno z aplikace Tapo. <b>Účet Tapo</b> (<code>TAPO_USER</code>, <code>TAPO_PASS</code>) je jeden pro všechna světla; kdo nechce mít heslo ve firmwaru, vloží místo něj hash.</p>
+          </div>
+          <div class="step-aside">
+<pre><code data-lang="ps">Copy-Item include\secrets.example.h include\secrets.h
+notepad include\secrets.h
+
+# volitelně: hash místo hesla
+python tools\tapo_hash.py vas@email.cz</code></pre>
+<pre><code data-lang="cpp">// include\secrets.h: sítě, účet Tapo a světla
+static const WifiNet WIFI_NETS[] = {
+  { "domov",  "heslo-wifi" },
+  { "obyvak", "heslo-wifi" },
+};
+#define TAPO_USER "vas@email.cz"
+#define TAPO_PASS "heslo-tapo"
+static const TapoDev TAPO_DEVICES[] = {
+  { "Obývák",       "192.168.1.57" },
+  { "Dětský pokoj", "192.168.1.60" },
+  { "Kuchyň",       "192.168.1.61" },
+  { "3D tiskárna",  "192.168.1.62" }, // zásuvka
+};</code></pre>
+          </div>
+        </article>
+        <article class="card step-row">
+          <div class="step-text">
+            <h3><span class="num">3</span> Nahrání firmwaru</h3>
+            <p>Připojte krabičku datovým kabelem USB-C a spusťte skript. Zkompiluje firmware a nahraje ho. První překlad stáhne toolchain ESP32 a trvá několik minut.</p>
+            <p>Po nahrání krabička na 5 s ukáže úvodní obrazovku (klepnutí nebo tlačítko ji zkrátí), připojí se a načte stav světel.</p>
+          </div>
+          <div class="step-aside">
+<pre><code data-lang="ps"># kompilace a nahrání
+.\flash.ps1
+
+# navíc sériový výpis (115200 Bd)
+.\flash.ps1 -Monitor
+
+# smaže celou flash včetně nastavení
+.\flash.ps1 -EraseFirst</code></pre>
+          </div>
+        </article>
+      </div>
+      <div class="note">
+        <p><b>Ověření z počítače před nahráním.</b> Ve stejné síti jako pásek vyzkoušejte přihlášení knihovnou python-kasa. Když projde tohle, projde i krabička.</p>
+<pre><code data-lang="ps">python -m pip install python-kasa
+kasa --host 192.168.1.57 --username EMAIL --password HESLO `
+     --device-family SMART.TAPOBULB --encrypt-type KLAP --login-version 2 state</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Ovládání ─────────────────────────────────────────────────────── -->
+  <section id="ovladani">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Ovládání</div>
+        <h2>Dotyk a tři tlačítka</h2>
+      </div>
+      <div class="grid-2">
+        <div>
+          <h3>Hlavní obrazovka</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Ovladač</th><th>Akce</th></tr>
+              <tr><td data-label="Ovladač">klepnutí na přepínač</td><td data-label="Akce">přepne světlo (pravá část karty se stavem a přepínačem)</td></tr>
+              <tr><td data-label="Ovladač">klepnutí na jméno</td><td data-label="Akce">otevře barvu a jas (levá část karty), u zásuvky <a href="#zasuvky">časovač</a></td></tr>
+              <tr><td data-label="Ovladač">podržení prstu</td><td data-label="Akce">otevře nastavení</td></tr>
+              <tr><td data-label="Ovladač">Obnovit</td><td data-label="Akce">znovu načte stav; při výpadku Wi-Fi nové připojení</td></tr>
+              <tr><td data-label="Ovladač">Nastavení</td><td data-label="Akce">otevře nastavení</td></tr>
+              <tr><td data-label="Ovladač"><kbd>BOOT</kbd> krátce</td><td data-label="Akce">posun dolů: první stisk označí první světlo, další stisky posunou výběr (u jediného světla obnoví stav)</td></tr>
+              <tr><td data-label="Ovladač"><kbd>BOOT</kbd> podržení</td><td data-label="Akce">otevře nastavení</td></tr>
+              <tr><td data-label="Ovladač"><kbd>KEY</kbd></td><td data-label="Akce">akce: přepne vybrané světlo (modrý rámeček)</td></tr>
+              <tr><td data-label="Ovladač"><kbd>PWR</kbd> krátce</td><td data-label="Akce">hned zhasnout a usnout</td></tr>
+              <tr><td data-label="Ovladač"><kbd>PWR</kbd> 6 s</td><td data-label="Akce">úplné vypnutí (AXP2101); zapnutí podržením 0,5 s</td></tr>
+              <tr><td data-label="Ovladač">zakrytí dlaní</td><td data-label="Akce">hned zhasnout a usnout</td></tr>
+            </table>
+          </div>
+          <p class="table-note">V ukázce: klepnutí nebo <kbd>BOOT</kbd> = další obrazovka, <kbd>KEY</kbd>, Ukončit, podržení prstu nebo <kbd>BOOT</kbd> = konec.</p>
+        </div>
+        <div>
+          <h3>Nastavení</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Položka</th><th>Hodnoty</th></tr>
+              <tr><td data-label="Položka">Jas displeje</td><td data-label="Hodnoty">0/4 až 4/4, výchozí 3/4</td></tr>
+              <tr><td data-label="Položka">Zhasnout po</td><td data-label="Hodnoty">10 / 20 / 30 / 60 / 120 s na baterii; na USB trojnásobek, nejméně 60 s</td></tr>
+              <tr><td data-label="Položka">Probuzení dotykem</td><td data-label="Hodnoty">ZAP / VYP; VYP = ze spánku budí jen <kbd>BOOT</kbd> a <kbd>KEY</kbd>, řadič dotyku se uspí (na USB budí dotyk vždy)</td></tr>
+              <tr><td data-label="Položka">Zvuk</td><td data-label="Hodnoty">ZAP / VYP; cvaknutí, dvojtón při přepnutí, dvojí hluboké pípnutí při chybě</td></tr>
+              <tr><td data-label="Položka">Demo režim</td><td data-label="Hodnoty">SPUSTIT; ukázka 12 podob obrazovky, světla se během ní neovládají</td></tr>
+              <tr><td data-label="Položka">Spánek</td><td data-label="Hodnoty">HLUBOKÝ / VYPNOUT; VYPNOUT = úplné vypnutí po prodlevě, zapne jen PWR; na USB jen zhasne</td></tr>
+              <tr><td data-label="Položka">Zpět</td><td data-label="Hodnoty">zavře nastavení (stejně jako Zavřít, podržení prstu nebo podržení BOOT)</td></tr>
+            </table>
+          </div>
+          <p class="table-note">V nastavení: <kbd>BOOT</kbd> = další položka, <kbd>KEY</kbd> nebo klepnutí = změnit hodnotu.</p>
+          <h3 class="table-gap">Barva a jas</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Ovladač</th><th>Akce</th></tr>
+              <tr><td data-label="Ovladač">přepínač nahoře nebo <kbd>KEY</kbd></td><td data-label="Akce">zapne / vypne světlo</td></tr>
+              <tr><td data-label="Ovladač">barevná dlaždice</td><td data-label="Akce">bílá, teplá bílá, červená, oranžová, žlutá, zelená, tyrkysová, modrá, fialová, růžová; aktuální má bílý rámeček</td></tr>
+              <tr><td data-label="Ovladač">–10 / –1 / +1 / +10</td><td data-label="Akce">jas po desítkách nebo po jednom procentu, 1 až 100&nbsp;%</td></tr>
+              <tr><td data-label="Ovladač">Zpět nebo <kbd>BOOT</kbd></td><td data-label="Akce">zpět na světla</td></tr>
+            </table>
+          </div>
+          <p class="table-note">Změna se pošle hned a zhasnutý pásek rozsvítí; při rychlém ťukání dostane pásek až poslední hodnotu. L900 nemá bílé diody, bílou skládá z barev a teplá bílá je jen nádech do oranžova.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Zásuvky P100 ─────────────────────────────────────────────────── -->
+  <section id="zasuvky">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Zásuvky Tapo P100</div>
+        <h2>Zásuvka s denním časovačem</h2>
+        <p>Vedle světel umí panel ovládat i chytré zásuvky Tapo P100, třeba na 3D tiskárnu nebo osvětlení dvora. Zapíšou se do <code>TAPO_DEVICES</code> stejně jako světla, panel je pozná sám (zásuvka nehlásí jas ani barvu) a místo barev a jasu jim nabídne <b>časovač zapnutí a vypnutí</b>.</p>
+      </div>
+      <div class="gallery">
+        <figure class="shot"><a href="screens/13_zasuvky.png" data-lightbox="12"><img src="screens/thumbs/13_zasuvky.png" srcset="screens/thumbs/13_zasuvky.png 240w, screens/13_zasuvky.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Světlo a dvě zásuvky" loading="lazy"></a><figcaption>Světlo a dvě zásuvky P100: doba provozu a časovač pod jménem</figcaption></figure>
+        <figure class="shot"><a href="screens/14_zasuvka_casovac.png" data-lightbox="13"><img src="screens/thumbs/14_zasuvka_casovac.png" srcset="screens/thumbs/14_zasuvka_casovac.png 240w, screens/14_zasuvka_casovac.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Časovač zásuvky" loading="lazy"></a><figcaption>Zásuvka: časovač zapnutí a vypnutí</figcaption></figure>
+        <figure class="shot"><a href="screens/15_zasuvka_vypnuta.png" data-lightbox="14"><img src="screens/thumbs/15_zasuvka_vypnuta.png" srcset="screens/thumbs/15_zasuvka_vypnuta.png 240w, screens/15_zasuvka_vypnuta.png 480w" sizes="(max-width: 640px) 45vw, 240px" width="240" height="240" alt="Zásuvka vypnutá" loading="lazy"></a><figcaption>Zásuvka vypnutá, prst na +5 m</figcaption></figure>
+      </div>
+      <div class="grid-2" style="margin-top:2rem">
+        <div>
+          <h3>Karta zásuvky</h3>
+          <ul class="plain-list">
+            <li>Pod jménem je <b>doba provozu</b> od posledního zapnutí (třeba „běží 5 h 3 m“) a nejbližší automatické vypnutí („· vyp 22:00“).</li>
+            <li>Vypnutá zásuvka ukáže plánované zapnutí a vypnutí („zap 07:00 · vyp 22:00“), když je časovač povolený.</li>
+            <li>Při pěti a šesti kartách je popis vedle jména a kratší: „5 h 3 m · 22:00“, „07:00–22:00“.</li>
+            <li>Klepnutí na přepínač (pravá část karty) nebo <kbd>KEY</kbd> zásuvku hned zapne či vypne. Klepnutí na jméno otevře časovač.</li>
+            <li>Tečka před jménem je bílá, zásuvka barvu nemá.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Detail: časovač</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Ovladač</th><th>Akce</th></tr>
+              <tr><td data-label="Ovladač">přepínač nahoře nebo <kbd>KEY</kbd></td><td data-label="Akce">zapne / vypne zásuvku hned</td></tr>
+              <tr><td data-label="Ovladač">Zapnout v <code>HH:MM</code> + přepínač</td><td data-label="Akce">denní automatické zapnutí; přepínač pravidlo povolí nebo zakáže</td></tr>
+              <tr><td data-label="Ovladač">Vypnout v <code>HH:MM</code> + přepínač</td><td data-label="Akce">denní automatické vypnutí</td></tr>
+              <tr><td data-label="Ovladač">–1 h / –5 m / +5 m / +1 h</td><td data-label="Akce">posun času pod řádkem; posun pravidlo zároveň povolí</td></tr>
+              <tr><td data-label="Ovladač">Zpět nebo <kbd>BOOT</kbd></td><td data-label="Akce">zpět na karty</td></tr>
+            </table>
+          </div>
+          <p class="table-note">Pravidlo se uloží přímo do zásuvky (každý den v týdnu), takže spíná i když panel spí nebo je vypnutý, a bez internetu. Při rychlém ťukání dostane zásuvka až poslední čas. Pozor: vypnutí zásuvky přeruší napájení, u 3D tiskárny tedy nenastavuj vypnutí na dobu, kdy se může tisknout.</p>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:2rem">
+        <div>
+          <h3>Pravidla v zásuvce</h3>
+          <ul class="plain-list">
+            <li>Panel pracuje s jedním pravidlem zapnutí a jedním vypnutí. Když už v zásuvce pravidla jsou (třeba z aplikace Tapo), upravuje první z nich; když chybí, při první změně je založí. Ostatní pravidla nechá být.</li>
+            <li>Pravidlo z aplikace s časem podle východu či západu slunce nebo jen pro některé dny platí po změně z panelu v pevný čas každý den.</li>
+            <li>Rozvrh se čte při každém načtení stavu, změny z aplikace panel uvidí. Když se ho přečíst nepodaří, změna se neodešle a ukáže se chyba, aby v zásuvce nevzniklo pravidlo navíc.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Čas a posun</h3>
+          <ul class="plain-list">
+            <li>Tlačítka ±5 m posouvají po pěti minutách; čas mezi nimi (například 18:07 z aplikace) první stisk zaokrouhlí na pětiminutovku. Přes půlnoc čas přeskočí (23:55 + 5 m = 00:00).</li>
+            <li>Zapnutí a vypnutí nesmí mít stejnou minutu, zásuvka by to odmítla („stejný čas zap i vyp“). Posun proto takovou minutu přeskočí.</li>
+            <li>Čas si zásuvka bere z internetu přes aplikaci Tapo. Po restartu bez internetu ho nemusí znát a časovač nespustí.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Spotřeba ─────────────────────────────────────────────────────── -->
+  <section class="alt" id="spotreba">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Baterie</div>
+        <h2>Proč vydrží</h2>
+        <p>Bdění trvá typicky dvacet sekund, zbytek je spánek. Výdrž proto určuje hlavně jas displeje, prodleva zhasnutí a to, zda má ve spánku bdít řadič dotyku.</p>
+      </div>
+      <div class="power-list">
+        <div class="card"><h3>Hluboký spánek</h3><p>Procesor stojí, displej je vypnutý příkazem, Wi-Fi vypnutá. Probuzení zajišťuje blok RTC přes BOOT, KEY a INT dotyku, PWR ze spánku nebudí. Probuzení je nový start firmwaru; úvodní obrazovka se přeskočí a stav světel i relace KLAP se vezmou z RTC paměti.</p></div>
+        <div class="card"><h3>Probuzení dotykem</h3><p>Řadič dotyku CST9220 ve spánku bdí v úsporném režimu a při dotyku stáhne INT k nule. S vypnutým probuzením dotykem se před spánkem uspí příkazem a budí jen tlačítka.</p></div>
+        <div class="card"><h3>Úsporné bdění</h3><p>Procesor běží na 160&nbsp;MHz. Wi-Fi jede naplno jen při připojení a komunikaci s pásky, mezitím rádio spí mezi majáky přístupového bodu. Posledních 5&nbsp;s před zhasnutím je displej ztlumený.</p></div>
+        <div class="card"><h3>Úklid před spánkem</h3><p>Před hlubokým spánkem se vypne analogová část zvukového kodeku a měření v řadiči napájení, která ve spánku nikdo nečte. Nepoužívaný akcelerometr je vypnutý od startu.</p></div>
+        <div class="card"><h3>Rychlé připojení</h3><p>Kanál a BSSID přístupového bodu se pamatují v RTC paměti, připojení po probuzení obejde skenování. Volitelná pevná IP adresa panelu vynechá i DHCP.</p></div>
+        <div class="card"><h3>Ochrana článku</h3><p>Když baterie bez USB klesne na 2&nbsp;% a pod 3,35&nbsp;V, krabička ukáže hlášku a vypne se. Na USB se neuspává, jen zhasne, aby byla hned k dispozici.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Potíže ───────────────────────────────────────────────────────── -->
+  <section id="potize">
+    <div class="container">
+      <div class="section-head">
+        <div class="kicker">Řešení potíží</div>
+        <h2>Co hláška znamená</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Hláška</th><th>Příčina</th><th>Řešení</th></tr>
+          <tr><td data-label="Hláška">Wi-Fi nedostupná</td><td data-label="Příčina">špatné SSID nebo heslo, síť mimo dosah, 5 GHz</td><td data-label="Řešení">zkontrolujte <code>WIFI_NETS</code>; krabička umí jen 2,4 GHz</td></tr>
+          <tr><td data-label="Hláška">není v síti</td><td data-label="Příčina">pásek má jinou IP, je bez napájení, nebo v jiné síti</td><td data-label="Řešení">ověřte IP v aplikaci Tapo, rezervujte ji v routeru</td></tr>
+          <tr><td data-label="Hláška">neodpovídá</td><td data-label="Příčina">pásek přetížený, síť ztrácí pakety</td><td data-label="Řešení">klepněte na Obnovit; pásek odpojte a zapojte</td></tr>
+          <tr><td data-label="Hláška">špatné přihlášení</td><td data-label="Příčina">jiný účet než v aplikaci, překlep, vypnutá kompatibilita s třetími stranami</td><td data-label="Řešení">opravte účet v <code>secrets.h</code>, zapněte kompatibilitu v aplikaci Tapo</td></tr>
+          <tr><td data-label="Hláška">relace vypršela</td><td data-label="Příčina">pásek zahodil relaci (restart)</td><td data-label="Řešení">krabička zkusí nový handshake sama; jinak Obnovit</td></tr>
+          <tr><td data-label="Hláška">chyba protokolu</td><td data-label="Příčina">pásek odpovídá jinak, než se čeká (starý firmware, jiné zařízení)</td><td data-label="Řešení">aktualizujte firmware pásku v aplikaci</td></tr>
+          <tr><td data-label="Hláška">zařízení zaneprázdněno</td><td data-label="Příčina">pásek nebo zásuvka hlásí, že povel teď nepřijme</td><td data-label="Řešení">chvíli počkejte a zkuste znovu</td></tr>
+          <tr><td data-label="Hláška">stejný čas zap i vyp</td><td data-label="Příčina">zapnutí i vypnutí zásuvky na stejnou minutu (třeba nastavené v aplikaci Tapo)</td><td data-label="Řešení">posuňte jeden z časů</td></tr>
+          <tr><td data-label="Hláška">časovač zásuvky nespíná</td><td data-label="Příčina">pravidlo je zakázané, nebo zásuvka nezná správný čas (po restartu bez internetu)</td><td data-label="Řešení">v detailu zásuvky zkontrolujte přepínač; nechte zásuvce přístup k internetu</td></tr>
+          <tr><td data-label="Hláška">chyba HTTP</td><td data-label="Příčina">na adrese odpovídá něco jiného než světlo Tapo</td><td data-label="Řešení">zkontrolujte IP adresu v <code>TAPO_DEVICES</code></td></tr>
+          <tr><td data-label="Hláška">nebudí se dotykem</td><td data-label="Příčina">probuzení dotykem vypnuté</td><td data-label="Řešení">zapněte v nastavení; <kbd>BOOT</kbd> a <kbd>KEY</kbd> budí vždy</td></tr>
+          <tr><td data-label="Hláška">nebudí se vůbec</td><td data-label="Příčina">Spánek = VYPNOUT, nebo vybitá baterie</td><td data-label="Řešení">podržte PWR 0,5 s; připojte USB</td></tr>
+        </table>
+      </div>
+      <div class="note">
+        Sériový výpis (<code>.\flash.ps1 -Monitor</code>) ukazuje důvod startu (<code>wake=0</code> zapnutí, <code>1</code> tlačítko, <code>2</code> dotyk), průběh připojení a návratové kódy KLAP.
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>Panel světel · firmware pro Waveshare <span class="nowrap">ESP32-S3-Touch-AMOLED-2.16</span> (<a href="https://rpishop.cz/684624/waveshare-vyvojova-deska-esp32-s3-kapacitnim-amoled-2-16-displejem" target="_blank" rel="noopener">RPishop</a>) · <a href="https://github.com/stanislavkaska/panel-tapo" target="_blank" rel="noopener">GitHub</a></div>
+      <div>Protokol KLAP podle <a href="https://github.com/python-kasa/python-kasa" target="_blank" rel="noopener">python-kasa</a> · hardwarová vrstva z Rozhodovače · licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.cs" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a></div>
+    </div>
+  </footer>
+
+  <!-- Lightbox: obrazovka 480 px zvětšená na celý násobek (ostré pixely), fotka plynule do okna -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Zvětšený obrázek" hidden>
+    <button class="lb-btn lb-prev" type="button" aria-label="Předchozí">‹</button>
+    <figure>
+      <img alt="">
+      <figcaption><span class="lb-caption"></span><small>Esc zavře · šipky listují · klepnutí mimo obrázek zavře</small></figcaption>
+    </figure>
+    <button class="lb-btn lb-next" type="button" aria-label="Další">›</button>
+    <button class="lb-btn lb-close" type="button" aria-label="Zavřít">×</button>
+  </div>
+
+  <script src="smooth_font.js"></script>
+  <script src="simulator.js"></script>
+  <script src="gallery.js"></script>
+  <script src="highlight.js"></script>
+  <script src="mobile.js"></script>
+</body>
+</html>
